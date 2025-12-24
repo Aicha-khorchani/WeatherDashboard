@@ -12,10 +12,16 @@
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-  <Resource Include="Assets\Icons\dashboard_icon.ico" />
-      <Resource Include="Assets\Icons\tempreture_png.png" />
+    <Resource Include="Assets\Icons\dashboard_icon.ico" />
+    <Resource Include="Assets\Icons\tempreture_png.png" />
     <Resource Include="Assets\Icons\Humidity_png.png" />
     <Resource Include="Assets\Icons\wind_night_weather_png.png" />
-</ItemGroup>
+    <Resource Include="Assets\Icons\1.png" />
+    <Resource Include="Assets\Icons\2.png" />
+    <Resource Include="Assets\Icons\3.png" />
+    <Resource Include="Assets\Icons\4.png" />
+    <Resource Include="Assets\Icons\5.png" />
+    <Resource Include="Assets\Icons\6.png" />
+  </ItemGroup>
 
 </Project>
