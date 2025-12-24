@@ -11,5 +11,11 @@
   <ItemGroup>
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
   </ItemGroup>
+  <ItemGroup>
+  <Resource Include="Assets\Icons\dashboard_icon.ico" />
+      <Resource Include="Assets\Icons\tempreture_png.png" />
+    <Resource Include="Assets\Icons\Humidity_png.png" />
+    <Resource Include="Assets\Icons\wind_night_weather_png.png" />
+</ItemGroup>
 
 </Project>
