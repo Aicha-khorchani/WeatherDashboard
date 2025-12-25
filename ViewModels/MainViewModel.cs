@@ -16,13 +16,14 @@ namespace WeatherDashboard.ViewModels
 
         public MainViewModel()
         {
-            _currentWeather = null;   
-            _isLoading = false;      
+            _currentWeather = null;
+            _isLoading = false;
+            _weeklyForecast = null;
             _cityName = string.Empty;
             _selectedCity = null;
             _geocodingService = new GeocodingService();
             _weatherService = new WeatherApiService();
-
+            ToggleWeeklyForecastCommand = new AsyncCommand(ToggleWeeklyForecastAsync);
             SearchCommand = new AsyncCommand(SearchAsync);
         }
 
@@ -36,14 +37,24 @@ namespace WeatherDashboard.ViewModels
             get => _cityName;
             set { _cityName = value; OnPropertyChanged(); }
         }
-private City? _selectedCity;
-public City? SelectedCity
-{
-    get => _selectedCity;
-    set { _selectedCity = value; OnPropertyChanged(); OnPropertyChanged(nameof(CityDisplay)); }
-}
+        private City? _selectedCity;
+        public City? SelectedCity
+        {
+            get => _selectedCity;
+            set { _selectedCity = value; OnPropertyChanged(); OnPropertyChanged(nameof(CityDisplay)); }
+        }
+        private List<DailyForecast>? _weeklyForecast;
+        public List<DailyForecast>? WeeklyForecast
+        {
+            get => _weeklyForecast;
+            set
+            {
+                _weeklyForecast = value;
+                OnPropertyChanged();
+            }
+        }
 
-public string CityDisplay => SelectedCity != null ? $"{SelectedCity.Name}, {SelectedCity.Country}" : "";
+        public string CityDisplay => SelectedCity != null ? $"{SelectedCity.Name}, {SelectedCity.Country}" : "";
 
         private CurrentWeather? _currentWeather;
         public CurrentWeather? CurrentWeather
@@ -58,6 +69,23 @@ public string CityDisplay => SelectedCity != null ? $"{SelectedCity.Name}, {Sele
             get => _isLoading;
             set { _isLoading = value; OnPropertyChanged(); }
         }
+private bool _isWeeklyVisible = true;
+public bool IsWeeklyVisible
+{
+    get => _isWeeklyVisible;
+    set { _isWeeklyVisible = value; OnPropertyChanged(); }
+}
+
+// Command to toggle weekly forecast
+public ICommand ToggleWeeklyForecastCommand { get; }
+
+// The method:
+private Task ToggleWeeklyForecastAsync()
+{
+    IsWeeklyVisible = !IsWeeklyVisible;
+    return Task.CompletedTask;
+}
+
 
         // ======================
         // Commands
@@ -84,6 +112,7 @@ public string CityDisplay => SelectedCity != null ? $"{SelectedCity.Name}, {Sele
                 var result = await _weatherService.GetWeatherAsync(city);
                 SelectedCity = city;
                 CurrentWeather = result.current;
+                WeeklyForecast = result.daily;
             }
             catch (Exception ex)
             {

@@ -35,11 +35,16 @@ namespace WeatherDashboard.Services
             try
             {
                 // Open-Meteo API: current + daily + hourly
-                string url =
-                    $"?latitude={city.Latitude.ToString(CultureInfo.InvariantCulture)}&longitude={city.Longitude.ToString(CultureInfo.InvariantCulture)}" +
-                    "&current_weather=true" +
-                    "&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max,weathercode" +
-                    "&timezone=auto";
+string url =
+    $"?latitude={city.Latitude.ToString(CultureInfo.InvariantCulture)}&longitude={city.Longitude.ToString(CultureInfo.InvariantCulture)}" +
+    "&current_weather=true" +
+    "&daily=weathercode," +
+    "temperature_2m_max,temperature_2m_min," +
+    "apparent_temperature_max,apparent_temperature_min," +
+    "windspeed_10m_max,precipitation_sum,uv_index_max," +
+    "sunrise,sunset";
+
+
 
                 Logger.Log($"Weather API URL: {url}");
 
@@ -78,22 +83,50 @@ namespace WeatherDashboard.Services
                     var dates = dailyElem.GetProperty("time").EnumerateArray();
                     var tempMax = dailyElem.GetProperty("temperature_2m_max").EnumerateArray();
                     var tempMin = dailyElem.GetProperty("temperature_2m_min").EnumerateArray();
+                    var feelsMax = dailyElem.GetProperty("apparent_temperature_max").EnumerateArray();
+                    var feelsMin = dailyElem.GetProperty("apparent_temperature_min").EnumerateArray();
                     var windMax = dailyElem.GetProperty("windspeed_10m_max").EnumerateArray();
+                    var precipitation = dailyElem.GetProperty("precipitation_sum").EnumerateArray();
+                    var uvMax = dailyElem.GetProperty("uv_index_max").EnumerateArray();
+                    var sunrise = dailyElem.GetProperty("sunrise").EnumerateArray();
+                    var sunset = dailyElem.GetProperty("sunset").EnumerateArray();
                     var codes = dailyElem.GetProperty("weathercode").EnumerateArray();
 
-                    while (dates.MoveNext() && tempMax.MoveNext() && tempMin.MoveNext() &&
-                           windMax.MoveNext() && codes.MoveNext())
+
+                    while (dates.MoveNext() &&
+                           tempMax.MoveNext() &&
+                           tempMin.MoveNext() &&
+                           feelsMax.MoveNext() &&
+                           feelsMin.MoveNext() &&
+                           windMax.MoveNext() &&
+                           precipitation.MoveNext() &&
+                           uvMax.MoveNext() &&
+                           sunrise.MoveNext() &&
+                           sunset.MoveNext() &&
+                           codes.MoveNext())
                     {
                         dailyForecasts.Add(new DailyForecast
                         {
-                            Date = DateTime.Parse(dates.Current.GetString() ?? DateTime.Now.ToString()),
+                            Date = DateTime.Parse(dates.Current.GetString()!),
+
                             MaxTemperature = tempMax.Current.GetDouble(),
                             MinTemperature = tempMin.Current.GetDouble(),
-                            AverageHumidity = 0,
+
+                            FeelsLikeMax = feelsMax.Current.GetDouble(),
+                            FeelsLikeMin = feelsMin.Current.GetDouble(),
+
                             WindSpeed = windMax.Current.GetDouble(),
+                            Precipitation = precipitation.Current.GetDouble(),
+                            UvIndexMax = uvMax.Current.GetDouble(),
+
+                            Sunrise = DateTime.Parse(sunrise.Current.GetString()!),
+                            Sunset = DateTime.Parse(sunset.Current.GetString()!),
+
+                            AverageHumidity = 0, // not provided by Open-Meteo daily 
                             WeatherCode = codes.Current.GetInt32().ToString(),
                             Condition = codes.Current.GetInt32().ToString()
                         });
+
                     }
                 }
 
