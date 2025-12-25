@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WeatherDashboard.ViewModels;
 
 namespace WeatherDashboard.Views
 {
@@ -19,7 +20,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-         var vm = new MainViewModel();
+        var vm = new MainViewModel();
             DataContext = vm;
 
             // Subscribe to property changed for WeeklyForecast updates
@@ -30,7 +31,7 @@ public partial class MainWindow : Window
                     // Set DataContext of WeeklyForecastControl when WeeklyForecast updates
                     WeeklyForecastControl.DataContext = new WeeklyForecastViewModel(vm.WeeklyForecast);
                 }
-            };
+        };
     }
 }
 }
