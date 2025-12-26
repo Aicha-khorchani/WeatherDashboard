@@ -98,8 +98,9 @@
                     <TextBlock Text="{Binding CurrentWeather.WeatherCode, Converter={StaticResource WeatherCodeToIconAndLevelConverter}, ConverterParameter=Level}"
                                FontSize="14"
                                Foreground="DarkRed"/>
-<views:WeeklyForecastView x:Name="WeeklyForecastControl" 
+<views:WeeklyForecastView
     Visibility="{Binding IsWeeklyVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
                     <StackPanel Orientation="Horizontal"
                                 Margin="0,8">
                         <Image Source="pack://application:,,,/Assets/Icons/tempreture_png.png"
