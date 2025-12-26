@@ -3,26 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WeatherDashboard.Helpers"
              xmlns:vm="clr-namespace:WeatherDashboard.ViewModels"
-             Height="Auto" Width="Auto">
-             <UserControl.Resources>
-    <local:WeatherCodeToIconAndLevelConverter x:Key="WeatherCodeToIconAndLevelConverter"/>
-</UserControl.Resources>
+             Height="Auto"
+        Width="Auto">
+    <UserControl.Resources>
+        <local:WeatherCodeToIconAndLevelConverter x:Key="WeatherCodeToIconAndLevelConverter"/>
+    </UserControl.Resources>
 
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Disabled">
             <ItemsControl ItemsSource="{Binding WeeklyForecast}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="5" VerticalAlignment="Center">
-                            <Image Source="{Binding WeatherCode, Converter={StaticResource WeatherCodeToIconAndLevelConverter}}" 
-                                   Width="30" Height="30" Margin="0,0,8,0"/>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Date, StringFormat='{}{0:ddd, MMM d}'}" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Condition}" FontStyle="Italic"/>
-                                <TextBlock Text="{Binding MaxTemperature, StringFormat='Max {0}°C'}"/>
-                                <TextBlock Text="{Binding MinTemperature, StringFormat='Min {0}°C'}"/>
+                        <Border Background="#F9FAFB"
+                                CornerRadius="12"
+                                Padding="10"
+                                Margin="6"
+                                Width="90">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding Date, StringFormat='{}{0:ddd}'}"
+                                           FontWeight="SemiBold"
+                                           HorizontalAlignment="Center"/>
+
+                                <Image Source="{Binding WeatherCode, Converter={StaticResource WeatherCodeToIconAndLevelConverter}}"
+                                       Width="32"
+                                       Height="32"
+                                       Margin="0,6"/>
+<TextBlock Text="{Binding MaxTemperature, StringFormat='{}{0}°'}"
+           FontWeight="Bold"
+           HorizontalAlignment="Center"/>
+
+<TextBlock Text="{Binding MinTemperature, StringFormat='{}{0}°'}"
+           FontSize="11"
+           Foreground="Gray"
+           HorizontalAlignment="Center"/>
+
                             </StackPanel>
-                        </StackPanel>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -5,8 +5,10 @@
         xmlns:local="clr-namespace:WeatherDashboard.Helpers"
         xmlns:views="clr-namespace:WeatherDashboard.Views"
         Title="Weather Dashboard"
-        Width="420"
-        Height="520"
+        Width="820"
+        MinWidth="820"
+        ResizeMode="CanResize"
+        Height="600"
         Background="#F4F5F7"
         WindowStartupLocation="CenterScreen"
         Icon="pack://application:,,,/Assets/Icons/dashboard_icon.ico">
@@ -30,7 +32,7 @@
         <Border Background="White"
                 CornerRadius="16"
                 Padding="12">
-            <DockPanel>
+            <DockPanel LastChildFill="False">
                 <TextBox Text="{Binding CityName, UpdateSourceTrigger=PropertyChanged}"
                          BorderThickness="0"
                          FontSize="14"
@@ -38,9 +40,12 @@
                          VerticalContentAlignment="Center"/>
 
                 <Button Content="Search"
+                        DockPanel.Dock="Right"
+                        Width="110"
                         Margin="10,0,0,0"
                         Padding="14,6"
                         Command="{Binding SearchCommand}"/>
+
             </DockPanel>
         </Border>
 
@@ -98,9 +103,6 @@
                     <TextBlock Text="{Binding CurrentWeather.WeatherCode, Converter={StaticResource WeatherCodeToIconAndLevelConverter}, ConverterParameter=Level}"
                                FontSize="14"
                                Foreground="DarkRed"/>
-<views:WeeklyForecastView
-    Visibility="{Binding IsWeeklyVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
                     <StackPanel Orientation="Horizontal"
                                 Margin="0,8">
                         <Image Source="pack://application:,,,/Assets/Icons/tempreture_png.png"
@@ -128,10 +130,13 @@
                                    Margin="8,0,0,0"/>
                     </StackPanel>
                     <Button Content="Show Weekly Forecast"
-        Command="{Binding ToggleWeeklyForecastCommand}"
-        Margin="0,16,0,0"
-        Width="200"
-        HorizontalAlignment="Center"/>
+                            Command="{Binding ToggleWeeklyForecastCommand}"
+                            Margin="0,16,0,0"
+                            Width="200"
+                            HorizontalAlignment="Center"/>
+                    <views:WeeklyForecastView
+                        Visibility="{Binding IsWeeklyVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
 
                     <TextBlock Text="Loading..."
                                HorizontalAlignment="Center"
