@@ -43,6 +43,26 @@ namespace WeatherDashboard.ViewModels
             get => _selectedCity;
             set { _selectedCity = value; OnPropertyChanged(); OnPropertyChanged(nameof(CityDisplay)); }
         }
+        private DailyForecast? _selectedDay;
+public DailyForecast? SelectedDay
+{
+    get => _selectedDay;
+    set
+    {
+        _selectedDay = value;
+        DailyPlotVM = value == null ? null : new DailyWeatherPlotViewModel { Day = value };
+        OnPropertyChanged();
+    }
+}
+
+        private DailyWeatherPlotViewModel? _dailyPlotVM;
+public DailyWeatherPlotViewModel? DailyPlotVM
+{
+    get => _dailyPlotVM;
+    set { _dailyPlotVM = value; OnPropertyChanged(); }
+}
+
+
         private List<DailyForecast>? _weeklyForecast;
         public List<DailyForecast>? WeeklyForecast
         {
@@ -69,22 +89,22 @@ namespace WeatherDashboard.ViewModels
             get => _isLoading;
             set { _isLoading = value; OnPropertyChanged(); }
         }
-private bool _isWeeklyVisible = true;
-public bool IsWeeklyVisible
-{
-    get => _isWeeklyVisible;
-    set { _isWeeklyVisible = value; OnPropertyChanged(); }
-}
+        private bool _isWeeklyVisible = true;
+        public bool IsWeeklyVisible
+        {
+            get => _isWeeklyVisible;
+            set { _isWeeklyVisible = value; OnPropertyChanged(); }
+        }
 
-// Command to toggle weekly forecast
-public ICommand ToggleWeeklyForecastCommand { get; }
+        // Command to toggle weekly forecast
+        public ICommand ToggleWeeklyForecastCommand { get; }
 
-// The method:
-private Task ToggleWeeklyForecastAsync()
-{
-    IsWeeklyVisible = !IsWeeklyVisible;
-    return Task.CompletedTask;
-}
+        // The method:
+        private Task ToggleWeeklyForecastAsync()
+        {
+            IsWeeklyVisible = !IsWeeklyVisible;
+            return Task.CompletedTask;
+        }
 
 
         // ======================

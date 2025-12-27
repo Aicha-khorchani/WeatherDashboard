@@ -35,17 +35,15 @@ namespace WeatherDashboard.Services
             try
             {
                 // Open-Meteo API: current + daily + hourly
-string url =
-    $"?latitude={city.Latitude.ToString(CultureInfo.InvariantCulture)}&longitude={city.Longitude.ToString(CultureInfo.InvariantCulture)}" +
-    "&current_weather=true" +
-    "&daily=weathercode," +
-    "temperature_2m_max,temperature_2m_min," +
-    "apparent_temperature_max,apparent_temperature_min," +
-    "windspeed_10m_max,precipitation_sum,uv_index_max," +
-    "sunrise,sunset";
-
-
-
+                string url =
+                    $"?latitude={city.Latitude.ToString(CultureInfo.InvariantCulture)}&longitude={city.Longitude.ToString(CultureInfo.InvariantCulture)}" +
+                    "&current_weather=true" +
+                    "&hourly=temperature_2m,windspeed_10m" +
+                    "&daily=weathercode," +
+                    "temperature_2m_max,temperature_2m_min," +
+                    "apparent_temperature_max,apparent_temperature_min," +
+                    "windspeed_10m_max,precipitation_sum,uv_index_max," +
+                    "sunrise,sunset";
                 Logger.Log($"Weather API URL: {url}");
 
                 var response = await _httpClient.GetAsync(url);
@@ -91,8 +89,6 @@ string url =
                     var sunrise = dailyElem.GetProperty("sunrise").EnumerateArray();
                     var sunset = dailyElem.GetProperty("sunset").EnumerateArray();
                     var codes = dailyElem.GetProperty("weathercode").EnumerateArray();
-
-
                     while (dates.MoveNext() &&
                            tempMax.MoveNext() &&
                            tempMin.MoveNext() &&
@@ -130,6 +126,30 @@ string url =
                     }
                 }
 
+                // Hourly data
+                if (doc.RootElement.TryGetProperty("hourly", out JsonElement hourlyElem))
+                {
+                    var times = hourlyElem.GetProperty("time").EnumerateArray();
+                    var temps = hourlyElem.GetProperty("temperature_2m").EnumerateArray();
+                    var winds = hourlyElem.GetProperty("windspeed_10m").EnumerateArray();
+
+                    while (times.MoveNext() && temps.MoveNext() && winds.MoveNext())
+                    {
+                        DateTime time = DateTime.Parse(times.Current.GetString()!);
+
+                        // assign hourly points to correct day
+                        var day = dailyForecasts.Find(d => d.Date.Date == time.Date);
+                        if (day != null)
+                        {
+                            day.HourlyPoints.Add(new HourlyWeatherPoint
+                            {
+                                Time = time,
+                                Temperature = temps.Current.GetDouble(),
+                                WindSpeed = winds.Current.GetDouble()
+                            });
+                        }
+                    }
+                }
                 Logger.Log($"Weather fetched for {city.Name}");
                 return (current, dailyForecasts);
             }
