@@ -55,21 +55,52 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- WELCOME MESSAGE -->
-            <StackPanel Grid.Row="0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Visibility="{Binding CurrentWeather, Converter={StaticResource NullToVisibilityConverter}}">
-                <TextBlock Text="Welcome to Weather Dashboard!"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,10"/>
-                <TextBlock Text="Please enter a city name and click Search."
-                           FontSize="14"
-                           HorizontalAlignment="Center"
-                           Foreground="Gray"/>
-            </StackPanel>
+<!-- WELCOME MESSAGE -->
+<StackPanel Grid.Row="0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Visibility="{Binding CurrentWeather, Converter={StaticResource NullToVisibilityConverter}}">
+
+    <!-- Animated Icon -->
+    <Image Source="pack://application:,,,/Assets/Icons/4.png"
+           Width="80"
+           Height="80"
+           Margin="0,0,0,16">
+        <Image.RenderTransform>
+            <ScaleTransform x:Name="PulseTransform" ScaleX="1" ScaleY="1"/>
+        </Image.RenderTransform>
+        <Image.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                        <DoubleAnimation
+                            Storyboard.TargetProperty="RenderTransform.ScaleX"
+                            From="1"
+                            To="1.1"
+                            Duration="0:0:0.8"/>
+                        <DoubleAnimation
+                            Storyboard.TargetProperty="RenderTransform.ScaleY"
+                            From="1"
+                            To="1.1"
+                            Duration="0:0:0.8"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Image.Triggers>
+    </Image>
+
+    <!-- Text -->
+    <TextBlock Text="Welcome to Weather Dashboard"
+               FontSize="22"
+               FontWeight="SemiBold"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,6"/>
+
+    <TextBlock Text="Search for a city to see live weather updates"
+               FontSize="14"
+               Foreground="Gray"
+               HorizontalAlignment="Center"/>
+</StackPanel>
 
             <!-- WEATHER CARD -->
             <Border Grid.Row="0"
